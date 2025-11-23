@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Login — Institute Name</title>
+<meta name="description" content="Secure login to Institute Name portal." />
+<style>
+  /* ---------- Theme & layout ---------- */
+  :root{
+    --bg:#0f1724;
+    --card:#0b1220;
+    --accent:#4fb1ff;
+    --muted:#9aa7bd;
+    --text:#e6eef8;
+    --glass:rgba(255,255,255,0.03);
+    --radius:14px;
+    --maxw:860px;
+    --pad:20px;
+    --shadow: 0 10px 30px rgba(2,6,23,0.6);
+    font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{
+    background:
+      radial-gradient(1200px 600px at 10% 10%, rgba(79,177,255,0.06), transparent 8%),
+      radial-gradient(900px 500px at 90% 90%, rgba(11,103,255,0.04), transparent 10%),
+      var(--bg);
+    color:var(--text);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
+
+  /* container */
+  .wrap{
+    width:100%;
+    max-width:var(--maxw);
+    display:grid;
+    grid-template-columns: 440px 1fr;
+    gap:28px;
+    align-items:center;
+  }
+  @media(max-width:880px){
+    .wrap{grid-template-columns:1fr; padding:8px}
+  }
+
+  /* left panel (illustration) */
+  .panel{
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius:var(--radius);
+    padding:var(--pad);
+    box-shadow:var(--shadow);
+    border:1px solid rgba(255,255,255,0.03);
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    align-items:center;
+    justify-content:center;
+  }
+  .brand{font-weight:700;letter-spacing:0.2px}
+  .sub{color:var(--muted);font-size:0.95rem}
+
+  /* right panel (form) */
+  .card{
+    background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
+    border-radius:var(--radius);
+    padding:calc(var(--pad) + 2px);
+    box-shadow:var(--shadow);
+    border:1px solid rgba(255,255,255,0.03);
+  }
+
+  form{display:flex;flex-direction:column;gap:12px}
+  h2{margin:0 0 6px}
+  p.lead{margin:0;color:var(--muted)}
+
+  .form-row{display:flex;flex-direction:column;gap:6px}
+  label{font-weight:600;font-size:0.95rem}
+  input[type="text"],input[type="email"],input[type="password"]{
+    padding:12px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);
+    background:transparent;color:var(--text);font-size:1rem;
+    outline:none;
+  }
+  input::placeholder{color:rgba(255,255,255,0.35)}
+  input:focus{box-shadow:0 8px 24px rgba(79,177,255,0.06);border-color:var(--accent)}
+  .row{display:flex;gap:8px;align-items:center}
+
+  .actions{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:6px}
+  .btn{
+    background:linear-gradient(90deg,var(--accent),#7ad7ff);
+    color:#05202b;padding:10px 14px;border-radius:10px;border:none;font-weight:700;cursor:pointer;
+  }
+  .ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:9px 12px;border-radius:10px;color:var(--text)}
+
+  .muted{color:var(--muted);font-size:0.95rem}
+
+  /* small helpers */
+  .center{display:flex;align-items:center;justify-content:center}
+  .small{font-size:0.9rem}
+  .error{color:#ffb4b4;background:rgba(255,180,180,0.04);padding:8px;border-radius:8px;border:1px solid rgba(255,180,180,0.07)}
+  .note{font-size:0.85rem;color:var(--muted)}
+
+  /* show/hide password button inside input */
+  .pw-wrap{position:relative}
+  .pw-toggle{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:transparent;border:none;color:var(--muted);cursor:pointer;padding:6px;border-radius:6px}
+
+  /* ---------- SVG character styles & animation ---------- */
+  .boy-svg{width:320px;height:auto;display:block}
+  .scene{transform-origin:center;transition:transform 350ms ease}
+  /* arm wave */
+  .arm{
+    transform-origin:24px 18px; /* pivot */
+    animation:wave 2s ease-in-out infinite;
+  }
+  @keyframes wave{
+    0%{ transform: rotate(0deg) translateY(0); }
+    10%{ transform: rotate(-22deg) translateY(-2px); }
+    20%{ transform: rotate(16deg) translateY(0); }
+    30%{ transform: rotate(-22deg) translateY(-1px); }
+    40%{ transform: rotate(10deg) translateY(0); }
+    100%{ transform: rotate(0deg) translateY(0); }
+  }
+  /* eyes blink */
+  .eye{ transform-origin:center; animation:blink 4.5s linear infinite; }
+  @keyframes blink{
+    0%,92%,100%{ transform: scaleY(1); }
+    93%,97%{ transform: scaleY(0.08); }
+  }
+  /* subtle bob */
+  .boy-wrap{animation:bob 6s ease-in-out infinite}
+  @keyframes bob{
+    0%,100%{ transform: translateY(0); }
+    50%{ transform: translateY(-6px); }
+  }
+
+  /* respect reduced motion */
+  @media (prefers-reduced-motion: reduce){
+    .arm,.eye,.boy-wrap{animation:none}
+  }
+
+  /* footer small */
+  .foot{margin-top:8px;color:var(--muted);font-size:0.9rem;text-align:center}
+</style>
+</head>
+<body>
+  <main class="wrap" aria-labelledby="login-heading">
+    <!-- left: illustration -->
+    <section class="panel" aria-hidden="false">
+      <div class="brand" aria-hidden="true">Institute <span style="color:var(--accent)">Name</span></div>
+      <div class="sub">Welcome back — please login to continue</div>
+
+      <!-- Animated boy SVG (vector) -->
+      <div aria-hidden="true" style="margin-top:16px">
+        <!-- Simple friendly boy SVG: head, hair, body, arm (waving), eyes (blink) -->
+        <svg class="boy-svg" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Friendly animated illustration of a person waving">
+          <defs>
+            <linearGradient id="skin" x1="0" x2="1"><stop offset="0" stop-color="#ffd6b3"/><stop offset="1" stop-color="#ffcaa3"/></linearGradient>
+            <linearGradient id="hair" x1="0" x2="1"><stop offset="0" stop-color="#22323f"/><stop offset="1" stop-color="#0f1724"/></linearGradient>
+            <linearGradient id="shirt" x1="0" x2="1"><stop offset="0" stop-color="#4fb1ff"/><stop offset="1" stop-color="#0b67ff"/></linearGradient>
+          </defs>
+
+          <g class="boy-wrap" transform="translate(20,8)">
+            <!-- body -->
+            <g transform="translate(40,80)">
+              <rect x="-10" y="0" width="120" height="90" rx="12" fill="url(#shirt)"/>
+              <!-- neck -->
+              <rect x="42" y="-8" width="16" height="14" rx="3" fill="url(#skin)"/>
+            </g>
+
+            <!-- head group -->
+            <g transform="translate(70,36)">
+              <!-- hair -->
+              <path d="M-18 10 q30 -40 72 -6 q14 12 2 26 q-40 32 -90 -20z" fill="url(#hair)"/>
+              <!-- face -->
+              <circle cx="20" cy="44" r="28" fill="url(#skin)"/>
+              <!-- left eye -->
+              <g transform="translate(8,44)">
+                <ellipse class="eye" cx="0" cy="0" rx="5" ry="3.6" fill="#05202b"/>
+              </g>
+              <!-- right eye -->
+              <g transform="translate(32,44)">
+                <ellipse class="eye" cx="0" cy="0" rx="5" ry="3.6" fill="#05202b"/>
+              </g>
+              <!-- smile -->
+              <path d="M6,58 q14,10 28,0" stroke="#05202b" stroke-width="2" stroke-linecap="round" fill="none" stroke-linejoin="round" opacity="0.95"/>
+            </g>
+
+            <!-- left arm (resting) -->
+            <g transform="translate(22,108)">
+              <rect x="-6" y="0" width="16" height="56" rx="8" fill="url(#skin)"/>
+            </g>
+
+            <!-- right arm (waving) - group with class 'arm' -->
+            <g class="arm" transform="translate(100,92)">
+              <!-- upper arm -->
+              <rect x="0" y="0" width="18" height="48" rx="9" fill="url(#skin)" />
+              <!-- hand -->
+              <g transform="translate(12,44)">
+                <circle cx="4" cy="4" r="8" fill="url(#skin)"/>
+              </g>
+            </g>
+
+            <!-- small backpack or accent behind -->
+            <g transform="translate(-6,102)" opacity="0.06">
+              <rect x="0" y="0" width="90" height="64" rx="10" fill="#000"/>
+            </g>
+          </g>
+        </svg>
+      </div>
+
+      <div class="foot">Tip: reduce motion via system preferences to pause animation</div>
+    </section>
+
+    <!-- right: login form -->
+    <section class="card" aria-labelledby="login-heading">
+      <h2 id="login-heading">Sign in to your account</h2>
+      <p class="lead muted">Enter your credentials to access student portal</p>
+
+      <form id="loginForm" novalidate>
+        <div class="form-row">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" placeholder="you@school.edu" autocomplete="username" required />
+        </div>
+
+        <div class="form-row pw-wrap">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" placeholder="••••••••" autocomplete="current-password" required minlength="6" />
+          <button type="button" class="pw-toggle" id="pwToggle" aria-pressed="false" aria-label="Show password">👁️</button>
+        </div>
+
+        <div class="row" style="justify-content:space-between;align-items:center">
+          <label style="display:flex;gap:8px;align-items:center;font-weight:500">
+            <input type="checkbox" id="remember" name="remember" style="width:16px;height:16px" />
+            <span class="small muted">Remember me</span>
+          </label>
+
+          <a href="#" class="muted small" id="forgot">Forgot?</a>
+        </div>
+
+        <div class="actions">
+          <button class="btn" type="submit">Sign in</button>
+          <button type="button" class="ghost" id="demoBtn" title="Demo login">Demo</button>
+        </div>
+
+        <div id="msg" role="status" aria-live="polite" style="min-height:28px"></div>
+
+        <div class="note small muted">Not a member? <a href="#" style="color:var(--accent);text-decoration:none">Create account</a></div>
+      </form>
+    </section>
+  </main>
+
+<script>
+  // Accessibility-first JS: password toggle, form validation, demo login
+  (function(){
+    const form = document.getElementById('loginForm');
+    const pw = document.getElementById('password');
+    const pwToggle = document.getElementById('pwToggle');
+    const msg = document.getElementById('msg');
+    const demo = document.getElementById('demoBtn');
+
+    // toggle password visibility
+    pwToggle.addEventListener('click', () => {
+      const isShown = pw.type === 'text';
+      pw.type = isShown ? 'password' : 'text';
+      pwToggle.setAttribute('aria-pressed', String(!isShown));
+      pwToggle.textContent = isShown ? '👁️' : '🙈';
+      pw.focus({preventScroll:true});
+    });
+
+    // simple validation & fake submit (client-only)
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      msg.textContent = '';
+      msg.className = '';
+      const email = form.email.value.trim();
+      const password = form.password.value;
+      if(!email || !email.includes('@')){
+        msg.textContent = 'Please enter a valid email address.';
+        msg.className = 'error';
+        form.email.focus();
+        return;
+      }
+      if(!password || password.length < 6){
+        msg.textContent = 'Password must be at least 6 characters.';
+        msg.className = 'error';
+        form.password.focus();
+        return;
+      }
+
+      // simulate submission success (do not send real credentials)
+      msg.textContent = 'Signing in…';
+      msg.className = 'muted';
+      // fake delay
+      setTimeout(() => {
+        msg.textContent = 'Success — this is a demo login. Replace with real backend endpoint.';
+        msg.className = 'small';
+        // optional: redirect to dashboard (demo)
+        // location.href = '/dashboard.html';
+      }, 700);
+    });
+
+    // demo login autofill
+    demo.addEventListener('click', () => {
+      form.email.value = 'student@example.edu';
+      form.password.value = 'password123';
+      msg.textContent = 'Demo credentials filled. Click Sign in.';
+      msg.className = 'muted';
+    });
+
+    // accessible enter key on "forgot" link - for demo just focus email
+    document.getElementById('forgot').addEventListener('click', (e) => {
+      e.preventDefault();
+      form.email.focus();
+      msg.textContent = 'Forgot password demo: please contact admin@school.edu';
+      msg.className = 'muted';
+    });
+
+    // preserve focus outline only for keyboard users
+    function handleMouseDown() { document.body.classList.add('using-mouse'); }
+    function handleKeyDown(e){ if(e.key === 'Tab') document.body.classList.remove('using-mouse'); }
+    window.addEventListener('mousedown', handleMouseDown);
+    window.addEventListener('keydown', handleKeyDown);
+  })();
+</script>
+</body>
+</html>
